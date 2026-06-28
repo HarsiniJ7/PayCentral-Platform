@@ -1,0 +1,58 @@
+services:
+  redis:
+    image: redis:7-alpine
+    container_name: paycentral-redis
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    volumes:
+      - redis-data:/data
+
+  backend:
+    build:
+      context: ./backend
+    container_name: paycentral-api
+    ports:
+      - "4000:4000"
+    environment:
+      PORT: 4000
+      JWT_SECRET: ${JWT_SECRET:-dev-secret-do-not-use-in-prod}
+      JWT_EXPIRES_IN: 15m
+      REFRESH_TOKEN_TTL_DAYS: "7"
+      CORS_ORIGIN: http://localhost:5173
+      DB_PATH: /app/data/paycentral.db
+      REDIS_URL: redis://redis:6379
+      OTEL_ENABLED: "false" # flip to true once you're pointing OTEL_EXPORTER_OTLP_ENDPOINT at a real collector
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://otel-collector:4318
+      BACKGROUND_JOBS_ENABLED: "true"
+      LOG_LEVEL: info
+    depends_on:
+      redis:
+        condition: service_healthy
+    volumes:
+      - backend-data:/app/data
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:4000/api/health/live', r => process.exit(r.statusCode === 200 ? 0 : 1)).on('error', () => process.exit(1))"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        VITE_API_URL: http://localhost:4000/api
+    container_name: paycentral-web
+    ports:
+      - "5173:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+
+volumes:
+  redis-data:
+  backend-data:
