@@ -1,0 +1,79 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html, body {
+  @apply bg-paper dark:bg-ink text-ink dark:text-mist font-body antialiased transition-colors;
+}
+
+::selection {
+  @apply bg-signal/30;
+}
+
+.card-number {
+  @apply font-mono tracking-widest;
+}
+
+/* visible focus ring everywhere, including custom controls */
+:focus-visible {
+  outline: 2px solid #1FAE8A;
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/* ---- Visual upgrade utilities ---- */
+
+.text-gradient {
+  background: linear-gradient(135deg, #1FAE8A, #6C63FF);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.surface-card {
+  @apply bg-white dark:bg-panel rounded-2xl border border-slate-100 dark:border-white/10 shadow-soft transition-shadow duration-200;
+}
+.surface-card:hover {
+  @apply shadow-lifted;
+}
+
+.glass-panel {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  backdrop-filter: blur(14px);
+}
+
+.btn-primary {
+  @apply inline-flex items-center justify-center gap-2 rounded-xl bg-brand-gradient text-white font-medium px-4 py-2.5 shadow-glow transition-transform duration-150 hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-60 disabled:hover:translate-y-0;
+}
+
+.btn-ghost {
+  @apply inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 dark:border-white/15 text-ink dark:text-mist font-medium px-4 py-2.5 transition-colors hover:bg-slate-50 dark:hover:bg-white/5;
+}
+
+.skeleton-shimmer {
+  background: linear-gradient(90deg, #eef0ee 25%, #f6f7f5 37%, #eef0ee 63%);
+  background-size: 400% 100%;
+  @apply animate-shimmer;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(60, 82, 102, 0.25);
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(60, 82, 102, 0.4);
+}
