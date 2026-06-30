@@ -3,14 +3,16 @@
 Live Swagger UI is served at `http://localhost:4000/api-docs` when the backend is running (spec
 source: `backend/src/openapi.ts`, raw JSON at `/api/openapi.json`). This document is a companion
 to that, not a replacement - it adds the request-flow context that a Swagger page doesn't show
-well. All endpoints are prefixed with `/api` and, except `/auth/login` and `/health`, require
-`Authorization: Bearer <token>`.
+well. All endpoints are prefixed with `/api` and, except `/auth/login`, `/auth/refresh`,
+`/auth/logout` and `/health`, require `Authorization: Bearer <token>`.
 
 ## Auth
 
 | Method | Path | Role | Description |
 |---|---|---|---|
-| POST | `/auth/login` | Public | Returns a JWT + user profile. Rate-limited to 10 attempts/min/IP. |
+| POST | `/auth/login` | Public | Returns a 15-min access token + a 7-day refresh token + user profile. Rate-limited to 10 attempts/min/IP. |
+| POST | `/auth/refresh` | Public | Exchanges a valid refresh token for a new access+refresh pair. Rotates the token (old one revoked immediately) so it can't be replayed. Rate-limited alongside login. |
+| POST | `/auth/logout` | Public | Revokes the given refresh token. The access token simply expires on its own. |
 
 ## Cards
 
