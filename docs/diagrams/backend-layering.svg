@@ -1,0 +1,63 @@
+<svg width="760" height="660" viewBox="0 0 760 660" xmlns="http://www.w3.org/2000/svg" role="img" font-family="Arial, Helvetica, sans-serif">
+  <title>PayCentral backend layering</title>
+  <desc>The Express API is organised as four layers: HTTP routes, JWT/role middleware, services holding business logic such as the fraud engine and audit logger, and a data access layer of parameterised better-sqlite3 statements writing to a single SQLite file. A side note maps each layer to its .NET Clean Architecture equivalent for the backend-focused track.</desc>
+  <defs>
+    <marker id="arrow3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M1 1L9 5L1 9Z" fill="#73726c"/>
+    </marker>
+  </defs>
+
+  <rect width="760" height="660" fill="#ffffff"/>
+  <text x="380" y="26" text-anchor="middle" font-size="15" font-weight="bold" fill="#2C2C2A">Backend layering — Express API</text>
+  <text x="380" y="44" text-anchor="middle" font-size="11" fill="#5F5E5A">This is a small layered API, not formal Clean Architecture/CQRS — see note below</text>
+
+  <!-- Layer 1: routes -->
+  <rect x="80" y="64" width="440" height="64" rx="8" fill="#E6F1FB" stroke="#378ADD" stroke-width="0.75"/>
+  <text x="300" y="89" text-anchor="middle" font-size="13" font-weight="bold" fill="#0C447C">HTTP / routes layer</text>
+  <text x="300" y="107" text-anchor="middle" font-size="10" fill="#185FA5">Express routers — auth, cards, wallet, transactions,</text>
+  <text x="300" y="120" text-anchor="middle" font-size="10" fill="#185FA5">reports, fraud, audit, notifications</text>
+
+  <line x1="300" y1="128" x2="300" y2="156" stroke="#73726c" stroke-width="1.25" marker-end="url(#arrow3)"/>
+
+  <!-- Layer 2: middleware -->
+  <rect x="80" y="156" width="440" height="56" rx="8" fill="#EEEDFE" stroke="#7F77DD" stroke-width="0.75"/>
+  <text x="300" y="180" text-anchor="middle" font-size="13" font-weight="bold" fill="#26215C">Middleware</text>
+  <text x="300" y="197" text-anchor="middle" font-size="10" fill="#534AB7">requireAuth (JWT verify) · requireRole (RBAC guard)</text>
+
+  <line x1="300" y1="212" x2="300" y2="240" stroke="#73726c" stroke-width="1.25" marker-end="url(#arrow3)"/>
+
+  <!-- Layer 3: services -->
+  <rect x="80" y="240" width="440" height="64" rx="8" fill="#E1F5EE" stroke="#1D9E75" stroke-width="0.75"/>
+  <text x="300" y="265" text-anchor="middle" font-size="13" font-weight="bold" fill="#085041">Services / domain logic</text>
+  <text x="300" y="283" text-anchor="middle" font-size="10" fill="#0F6E56">Fraud engine (6 rules) · notification service (mocked)</text>
+  <text x="300" y="296" text-anchor="middle" font-size="10" fill="#0F6E56">audit logger · cache layer</text>
+
+  <line x1="300" y1="304" x2="300" y2="332" stroke="#73726c" stroke-width="1.25" marker-end="url(#arrow3)"/>
+
+  <!-- Layer 4: data access -->
+  <rect x="80" y="332" width="440" height="64" rx="8" fill="#FAEEDA" stroke="#BA7517" stroke-width="0.75"/>
+  <text x="300" y="357" text-anchor="middle" font-size="13" font-weight="bold" fill="#633806">Data access</text>
+  <text x="300" y="375" text-anchor="middle" font-size="10" fill="#854F0B">better-sqlite3 prepared statements — parameterised,</text>
+  <text x="300" y="388" text-anchor="middle" font-size="10" fill="#854F0B">no string-concatenated SQL (SQL-injection safe)</text>
+
+  <line x1="300" y1="396" x2="300" y2="424" stroke="#73726c" stroke-width="1.25" marker-end="url(#arrow3)"/>
+
+  <!-- Data store -->
+  <rect x="150" y="424" width="300" height="50" rx="10" fill="#F1EFE8" stroke="#888780" stroke-width="0.75"/>
+  <text x="300" y="454" text-anchor="middle" font-size="12" font-weight="bold" fill="#2C2C2A">SQLite file — paycentral.db</text>
+
+  <!-- .NET mapping note -->
+  <rect x="60" y="500" width="640" height="140" rx="8" fill="#FAECE7" stroke="#D85A30" stroke-width="0.75"/>
+  <text x="380" y="524" text-anchor="middle" font-size="12" font-weight="bold" fill="#712B13">If this were the backend-focused (.NET) track</text>
+  <text x="90" y="550" font-size="11" fill="#993C1D">HTTP / routes layer</text>
+  <text x="700" y="550" text-anchor="end" font-size="11" fill="#993C1D">ASP.NET Core Controllers + Swagger</text>
+  <line x1="90" y1="558" x2="700" y2="558" stroke="#F0997B" stroke-width="0.5"/>
+  <text x="90" y="578" font-size="11" fill="#993C1D">Middleware</text>
+  <text x="700" y="578" text-anchor="end" font-size="11" fill="#993C1D">JWT bearer auth + FluentValidation</text>
+  <line x1="90" y1="586" x2="700" y2="586" stroke="#F0997B" stroke-width="0.5"/>
+  <text x="90" y="606" font-size="11" fill="#993C1D">Services / domain logic</text>
+  <text x="700" y="606" text-anchor="end" font-size="11" fill="#993C1D">MediatR handlers (CQRS), Application layer</text>
+  <line x1="90" y1="614" x2="700" y2="614" stroke="#F0997B" stroke-width="0.5"/>
+  <text x="90" y="634" font-size="11" fill="#993C1D">Data access</text>
+  <text x="700" y="634" text-anchor="end" font-size="11" fill="#993C1D">EF Core repositories against SQL Server</text>
+</svg>

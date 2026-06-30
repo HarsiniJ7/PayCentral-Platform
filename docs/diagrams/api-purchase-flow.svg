@@ -1,0 +1,120 @@
+<svg width="820" height="940" viewBox="0 0 820 940" xmlns="http://www.w3.org/2000/svg" role="img" font-family="Arial, Helvetica, sans-serif">
+  <title>PayCentral API flow — card purchase (debit) request</title>
+  <desc>Sequence of steps when POST /wallet/:cardId/debit is called: look up the card and wallet, check the card is active and the balance is sufficient (declining and audit-logging otherwise), debit the wallet, record the transaction, run the six fraud rules, raise a fraud alert and push a live Socket.io notification if any rule triggers, send a purchase-completed (and optional low-balance) notification, and return the new balance.</desc>
+  <defs>
+    <marker id="arrow2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M1 1L9 5L1 9Z" fill="#73726c"/>
+    </marker>
+  </defs>
+
+  <rect width="820" height="940" fill="#ffffff"/>
+  <text x="410" y="22" text-anchor="middle" font-size="15" font-weight="bold" fill="#2C2C2A">API flow — POST /wallet/:cardId/debit</text>
+
+  <!-- M1 start -->
+  <rect x="260" y="34" width="300" height="46" rx="23" fill="#F1EFE8" stroke="#888780" stroke-width="0.75"/>
+  <text x="410" y="62" text-anchor="middle" font-size="12" font-weight="bold" fill="#2C2C2A">POST /wallet/:cardId/debit</text>
+
+  <line x1="410" y1="80" x2="410" y2="110" stroke="#73726c" stroke-width="1.25" marker-end="url(#arrow2)"/>
+
+  <!-- M2 lookup -->
+  <rect x="260" y="110" width="300" height="50" rx="8" fill="#E1F5EE" stroke="#1D9E75" stroke-width="0.75"/>
+  <text x="410" y="131" text-anchor="middle" font-size="12" font-weight="bold" fill="#085041">Look up card + wallet</text>
+  <text x="410" y="148" text-anchor="middle" font-size="10" fill="#0F6E56">Cards joined to Wallets by cardId</text>
+
+  <line x1="410" y1="160" x2="410" y2="190" stroke="#73726c" stroke-width="1.25" marker-end="url(#arrow2)"/>
+
+  <!-- D1 diamond -->
+  <polygon points="410,190 560,230 410,270 260,230" fill="#FAEEDA" stroke="#BA7517" stroke-width="0.75"/>
+  <text x="410" y="226" text-anchor="middle" font-size="11" font-weight="bold" fill="#633806">Card status</text>
+  <text x="410" y="241" text-anchor="middle" font-size="11" font-weight="bold" fill="#633806">= Active?</text>
+
+  <!-- D1 No -> left lane -->
+  <line x1="260" y1="230" x2="222" y2="230" stroke="#73726c" stroke-width="1.25" marker-end="url(#arrow2)"/>
+  <text x="245" y="222" text-anchor="middle" font-size="10" fill="#5F5E5A">no</text>
+  <rect x="22" y="195" width="200" height="70" rx="8" fill="#FAECE7" stroke="#D85A30" stroke-width="0.75"/>
+  <text x="122" y="218" text-anchor="middle" font-size="11" font-weight="bold" fill="#712B13">Insert Declined txn</text>
+  <text x="122" y="234" text-anchor="middle" font-size="10" fill="#993C1D">+ audit log entry</text>
+  <text x="122" y="249" text-anchor="middle" font-size="10" fill="#993C1D">"TransactionOnInactiveCard"</text>
+  <line x1="122" y1="265" x2="122" y2="295" stroke="#73726c" stroke-width="1.25" marker-end="url(#arrow2)"/>
+  <rect x="22" y="295" width="200" height="44" rx="22" fill="#F1EFE8" stroke="#888780" stroke-width="0.75"/>
+  <text x="122" y="322" text-anchor="middle" font-size="11" font-weight="bold" fill="#2C2C2A">403 — Card is blocked</text>
+
+  <!-- D1 Yes -> down -->
+  <text x="425" y="263" font-size="10" fill="#5F5E5A">yes</text>
+  <line x1="410" y1="270" x2="410" y2="300" stroke="#73726c" stroke-width="1.25" marker-end="url(#arrow2)"/>
+
+  <!-- D2 diamond -->
+  <polygon points="410,300 560,340 410,380 260,340" fill="#FAEEDA" stroke="#BA7517" stroke-width="0.75"/>
+  <text x="410" y="336" text-anchor="middle" font-size="11" font-weight="bold" fill="#633806">Sufficient</text>
+  <text x="410" y="351" text-anchor="middle" font-size="11" font-weight="bold" fill="#633806">balance?</text>
+
+  <!-- D2 No -> right lane -->
+  <line x1="560" y1="340" x2="598" y2="340" stroke="#73726c" stroke-width="1.25" marker-end="url(#arrow2)"/>
+  <text x="578" y="332" text-anchor="middle" font-size="10" fill="#5F5E5A">no</text>
+  <rect x="598" y="305" width="200" height="60" rx="8" fill="#FAECE7" stroke="#D85A30" stroke-width="0.75"/>
+  <text x="698" y="328" text-anchor="middle" font-size="11" font-weight="bold" fill="#712B13">Insert Declined txn</text>
+  <text x="698" y="344" text-anchor="middle" font-size="10" fill="#993C1D">amount exceeds available</text>
+  <text x="698" y="358" text-anchor="middle" font-size="10" fill="#993C1D">balance</text>
+  <line x1="698" y1="365" x2="698" y2="395" stroke="#73726c" stroke-width="1.25" marker-end="url(#arrow2)"/>
+  <rect x="598" y="395" width="200" height="44" rx="22" fill="#F1EFE8" stroke="#888780" stroke-width="0.75"/>
+  <text x="698" y="422" text-anchor="middle" font-size="11" font-weight="bold" fill="#2C2C2A">400 — Insufficient funds</text>
+
+  <!-- D2 Yes -> down -->
+  <text x="425" y="373" font-size="10" fill="#5F5E5A">yes</text>
+  <line x1="410" y1="380" x2="410" y2="410" stroke="#73726c" stroke-width="1.25" marker-end="url(#arrow2)"/>
+
+  <!-- M4 debit -->
+  <rect x="260" y="410" width="300" height="50" rx="8" fill="#E1F5EE" stroke="#1D9E75" stroke-width="0.75"/>
+  <text x="410" y="431" text-anchor="middle" font-size="12" font-weight="bold" fill="#085041">Debit wallet balance</text>
+  <text x="410" y="448" text-anchor="middle" font-size="10" fill="#0F6E56">Atomic update, idempotency key checked</text>
+
+  <line x1="410" y1="460" x2="410" y2="490" stroke="#73726c" stroke-width="1.25" marker-end="url(#arrow2)"/>
+
+  <!-- M5 insert txn -->
+  <rect x="260" y="490" width="300" height="50" rx="8" fill="#E1F5EE" stroke="#1D9E75" stroke-width="0.75"/>
+  <text x="410" y="511" text-anchor="middle" font-size="12" font-weight="bold" fill="#085041">Insert Completed transaction</text>
+  <text x="410" y="528" text-anchor="middle" font-size="10" fill="#0F6E56">Reference number, merchant, amount, date</text>
+
+  <line x1="410" y1="540" x2="410" y2="570" stroke="#73726c" stroke-width="1.25" marker-end="url(#arrow2)"/>
+
+  <!-- M6 fraud engine -->
+  <rect x="260" y="570" width="300" height="50" rx="8" fill="#E1F5EE" stroke="#1D9E75" stroke-width="0.75"/>
+  <text x="410" y="591" text-anchor="middle" font-size="12" font-weight="bold" fill="#085041">Run fraud engine</text>
+  <text x="410" y="608" text-anchor="middle" font-size="10" fill="#0F6E56">6 automated rule checks (see fraud engine)</text>
+
+  <line x1="410" y1="620" x2="410" y2="650" stroke="#73726c" stroke-width="1.25" marker-end="url(#arrow2)"/>
+
+  <!-- D3 diamond -->
+  <polygon points="410,650 560,690 410,730 260,690" fill="#FAEEDA" stroke="#BA7517" stroke-width="0.75"/>
+  <text x="410" y="686" text-anchor="middle" font-size="11" font-weight="bold" fill="#633806">Any rule</text>
+  <text x="410" y="701" text-anchor="middle" font-size="11" font-weight="bold" fill="#633806">triggered?</text>
+
+  <!-- D3 Yes -> right lane -->
+  <line x1="560" y1="690" x2="598" y2="690" stroke="#73726c" stroke-width="1.25" marker-end="url(#arrow2)"/>
+  <text x="578" y="682" text-anchor="middle" font-size="10" fill="#5F5E5A">yes</text>
+  <rect x="598" y="655" width="200" height="70" rx="8" fill="#FAECE7" stroke="#D85A30" stroke-width="0.75"/>
+  <text x="698" y="678" text-anchor="middle" font-size="11" font-weight="bold" fill="#712B13">Insert FraudAlert(s)</text>
+  <text x="698" y="694" text-anchor="middle" font-size="10" fill="#993C1D">+ emit Socket.io "fraud:alert"</text>
+  <text x="698" y="709" text-anchor="middle" font-size="10" fill="#993C1D">to admin dashboard</text>
+
+  <!-- D3 No -> down -->
+  <text x="425" y="723" font-size="10" fill="#5F5E5A">no</text>
+  <line x1="410" y1="730" x2="410" y2="770" stroke="#73726c" stroke-width="1.25" marker-end="url(#arrow2)"/>
+
+  <!-- merge right lane back into M7 -->
+  <line x1="698" y1="725" x2="698" y2="790" stroke="#73726c" stroke-width="1.25"/>
+  <line x1="698" y1="790" x2="560" y2="790" stroke="#73726c" stroke-width="1.25" marker-end="url(#arrow2)"/>
+
+  <!-- M7 notifications -->
+  <rect x="260" y="770" width="300" height="60" rx="8" fill="#E1F5EE" stroke="#1D9E75" stroke-width="0.75"/>
+  <text x="410" y="793" text-anchor="middle" font-size="12" font-weight="bold" fill="#085041">Send notifications</text>
+  <text x="410" y="809" text-anchor="middle" font-size="10" fill="#0F6E56">Purchase completed (+ Low balance</text>
+  <text x="410" y="822" text-anchor="middle" font-size="10" fill="#0F6E56">if applicable) — mocked channel</text>
+
+  <line x1="410" y1="830" x2="410" y2="860" stroke="#73726c" stroke-width="1.25" marker-end="url(#arrow2)"/>
+
+  <!-- M8 end -->
+  <rect x="240" y="860" width="340" height="50" rx="25" fill="#F1EFE8" stroke="#888780" stroke-width="0.75"/>
+  <text x="410" y="881" text-anchor="middle" font-size="12" font-weight="bold" fill="#2C2C2A">201 — Success response</text>
+  <text x="410" y="897" text-anchor="middle" font-size="10" fill="#5F5E5A">{ newBalance, fraudAlertsTriggered }</text>
+</svg>

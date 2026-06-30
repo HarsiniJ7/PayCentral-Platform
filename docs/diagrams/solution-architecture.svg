@@ -1,0 +1,103 @@
+<svg width="1000" height="780" viewBox="0 0 1000 780" xmlns="http://www.w3.org/2000/svg" role="img" font-family="Arial, Helvetica, sans-serif">
+  <title>PayCentral solution architecture</title>
+  <desc>React TypeScript SPA used by Administrator and Cardholder, talking over REST+JWT and Socket.io to an Express Node.js API, which is organised into route modules, a fraud engine, notifications and an audit logger, backed by SQLite, an optional Redis cache, and a node-cron background job, with OpenTelemetry and health checks as cross-cutting observability.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M1 1L9 5L1 9Z" fill="#73726c"/>
+    </marker>
+  </defs>
+
+  <rect width="1000" height="780" fill="#ffffff"/>
+
+  <text x="500" y="28" text-anchor="middle" font-size="17" font-weight="bold" fill="#2C2C2A">PayCentral — solution architecture (PoC)</text>
+  <text x="500" y="46" text-anchor="middle" font-size="12" fill="#5F5E5A">Frontend &amp; UX track — React SPA + Express/TypeScript API + SQLite</text>
+
+  <!-- Actors -->
+  <rect x="300" y="60" width="180" height="50" rx="8" fill="#F1EFE8" stroke="#888780" stroke-width="0.75"/>
+  <text x="390" y="80" text-anchor="middle" font-size="13" font-weight="bold" fill="#2C2C2A">Administrator</text>
+  <text x="390" y="98" text-anchor="middle" font-size="11" fill="#5F5E5A">Issues cards, monitors fraud</text>
+
+  <rect x="520" y="60" width="180" height="50" rx="8" fill="#F1EFE8" stroke="#888780" stroke-width="0.75"/>
+  <text x="610" y="80" text-anchor="middle" font-size="13" font-weight="bold" fill="#2C2C2A">Cardholder</text>
+  <text x="610" y="98" text-anchor="middle" font-size="11" fill="#5F5E5A">Views balance, history</text>
+
+  <line x1="390" y1="110" x2="390" y2="180" stroke="#73726c" stroke-width="1.25" marker-end="url(#arrow)"/>
+  <line x1="610" y1="110" x2="610" y2="180" stroke="#73726c" stroke-width="1.25" marker-end="url(#arrow)"/>
+
+  <!-- SPA -->
+  <rect x="220" y="180" width="560" height="70" rx="8" fill="#E6F1FB" stroke="#378ADD" stroke-width="0.75"/>
+  <text x="500" y="207" text-anchor="middle" font-size="14" font-weight="bold" fill="#0C447C">React 18 + TypeScript SPA</text>
+  <text x="500" y="227" text-anchor="middle" font-size="11" fill="#185FA5">Admin portal · Cardholder portal · Vite · Tailwind CSS</text>
+
+  <!-- SPA <-> API -->
+  <line x1="380" y1="250" x2="380" y2="310" stroke="#73726c" stroke-width="1.25" marker-end="url(#arrow)"/>
+  <text x="400" y="285" font-size="11" fill="#5F5E5A">REST + JWT (HTTPS)</text>
+  <line x1="620" y1="310" x2="620" y2="250" stroke="#73726c" stroke-width="1.25" marker-end="url(#arrow)"/>
+  <text x="600" y="285" text-anchor="end" font-size="11" fill="#5F5E5A">Socket.io (live)</text>
+
+  <!-- API container -->
+  <rect x="140" y="310" width="720" height="250" rx="10" fill="#EEEDFE" stroke="#7F77DD" stroke-width="0.75"/>
+  <text x="170" y="340" font-size="14" font-weight="bold" fill="#26215C">Express API — Node.js + TypeScript</text>
+  <text x="170" y="358" font-size="11" fill="#534AB7">backend/src — JWT auth middleware on every protected route</text>
+
+  <!-- inner row 1 -->
+  <rect x="160" y="375" width="150" height="45" rx="6" fill="#E1F5EE" stroke="#1D9E75" stroke-width="0.75"/>
+  <text x="235" y="392" text-anchor="middle" font-size="12" font-weight="bold" fill="#085041">Auth routes</text>
+  <text x="235" y="408" text-anchor="middle" font-size="10" fill="#0F6E56">JWT + bcrypt + refresh</text>
+
+  <rect x="330" y="375" width="150" height="45" rx="6" fill="#E1F5EE" stroke="#1D9E75" stroke-width="0.75"/>
+  <text x="405" y="392" text-anchor="middle" font-size="12" font-weight="bold" fill="#085041">Card routes</text>
+  <text x="405" y="408" text-anchor="middle" font-size="10" fill="#0F6E56">Lifecycle + status history</text>
+
+  <rect x="500" y="375" width="150" height="45" rx="6" fill="#E1F5EE" stroke="#1D9E75" stroke-width="0.75"/>
+  <text x="575" y="392" text-anchor="middle" font-size="12" font-weight="bold" fill="#085041">Wallet routes</text>
+  <text x="575" y="408" text-anchor="middle" font-size="10" fill="#0F6E56">Load / debit / credit</text>
+
+  <rect x="670" y="375" width="150" height="45" rx="6" fill="#E1F5EE" stroke="#1D9E75" stroke-width="0.75"/>
+  <text x="745" y="392" text-anchor="middle" font-size="12" font-weight="bold" fill="#085041">Transaction routes</text>
+  <text x="745" y="408" text-anchor="middle" font-size="10" fill="#0F6E56">Purchase / refund / reversal</text>
+
+  <!-- inner row 2 -->
+  <rect x="160" y="435" width="150" height="45" rx="6" fill="#E1F5EE" stroke="#1D9E75" stroke-width="0.75"/>
+  <text x="235" y="452" text-anchor="middle" font-size="12" font-weight="bold" fill="#085041">Fraud engine</text>
+  <text x="235" y="468" text-anchor="middle" font-size="10" fill="#0F6E56">6 rule checks</text>
+
+  <rect x="330" y="435" width="150" height="45" rx="6" fill="#E1F5EE" stroke="#1D9E75" stroke-width="0.75"/>
+  <text x="405" y="452" text-anchor="middle" font-size="12" font-weight="bold" fill="#085041">Report routes</text>
+  <text x="405" y="468" text-anchor="middle" font-size="10" fill="#0F6E56">CSV / JSON export</text>
+
+  <rect x="500" y="435" width="150" height="45" rx="6" fill="#E1F5EE" stroke="#1D9E75" stroke-width="0.75"/>
+  <text x="575" y="452" text-anchor="middle" font-size="12" font-weight="bold" fill="#085041">Notification svc</text>
+  <text x="575" y="468" text-anchor="middle" font-size="10" fill="#0F6E56">Mocked email/SMS/push</text>
+
+  <rect x="670" y="435" width="150" height="45" rx="6" fill="#E1F5EE" stroke="#1D9E75" stroke-width="0.75"/>
+  <text x="745" y="452" text-anchor="middle" font-size="12" font-weight="bold" fill="#085041">Audit logger</text>
+  <text x="745" y="468" text-anchor="middle" font-size="10" fill="#0F6E56">Writes AuditLogs</text>
+
+  <text x="500" y="510" text-anchor="middle" font-size="11" fill="#534AB7">Socket.io gateway emits transaction:new · fraud:alert · card:status-changed · card:issued</text>
+
+  <!-- arrows down to data layer -->
+  <line x1="280" y1="560" x2="280" y2="620" stroke="#73726c" stroke-width="1.25" marker-end="url(#arrow)"/>
+  <line x1="520" y1="560" x2="520" y2="620" stroke="#73726c" stroke-width="1.25" marker-end="url(#arrow)"/>
+  <line x1="760" y1="560" x2="760" y2="620" stroke="#73726c" stroke-width="1.25" marker-end="url(#arrow)"/>
+
+  <!-- data layer -->
+  <rect x="180" y="620" width="200" height="60" rx="8" fill="#FAEEDA" stroke="#BA7517" stroke-width="0.75"/>
+  <text x="280" y="645" text-anchor="middle" font-size="12" font-weight="bold" fill="#633806">SQLite (better-sqlite3)</text>
+  <text x="280" y="662" text-anchor="middle" font-size="10" fill="#854F0B">Primary datastore — file-based</text>
+
+  <rect x="420" y="620" width="200" height="60" rx="8" fill="#FAEEDA" stroke="#BA7517" stroke-width="0.75"/>
+  <text x="520" y="641" text-anchor="middle" font-size="12" font-weight="bold" fill="#633806">Redis cache</text>
+  <text x="520" y="657" text-anchor="middle" font-size="10" fill="#854F0B">Daily-summary, 30s TTL,</text>
+  <text x="520" y="671" text-anchor="middle" font-size="10" fill="#854F0B">falls back to in-memory</text>
+
+  <rect x="660" y="620" width="200" height="60" rx="8" fill="#FAEEDA" stroke="#BA7517" stroke-width="0.75"/>
+  <text x="760" y="641" text-anchor="middle" font-size="12" font-weight="bold" fill="#633806">node-cron job</text>
+  <text x="760" y="657" text-anchor="middle" font-size="10" fill="#854F0B">Low-balance sweep,</text>
+  <text x="760" y="671" text-anchor="middle" font-size="10" fill="#854F0B">runs every minute</text>
+
+  <!-- observability -->
+  <rect x="300" y="710" width="400" height="55" rx="8" fill="#FAECE7" stroke="#D85A30" stroke-width="0.75"/>
+  <text x="500" y="733" text-anchor="middle" font-size="12" font-weight="bold" fill="#712B13">Observability (cross-cutting)</text>
+  <text x="500" y="750" text-anchor="middle" font-size="10" fill="#993C1D">OpenTelemetry tracing · /health/live · /health/ready</text>
+</svg>
