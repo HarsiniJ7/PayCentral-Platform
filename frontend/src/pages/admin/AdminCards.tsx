@@ -37,8 +37,8 @@ export default function AdminCards() {
     try {
       await api.patch(`/cards/${cardId}/status`, { status: newStatus, reason });
       load();
-    } catch (err: any) {
-      alert(err.message);
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "Something went wrong.");
     }
   }
 

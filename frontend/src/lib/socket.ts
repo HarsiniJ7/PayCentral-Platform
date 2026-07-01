@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { io, Socket } from "socket.io-client";
 import { getToken } from "../api/client";
 
@@ -31,12 +31,12 @@ function releaseSocket() {
 
 
 export function useRealtime() {
-  const [connected, setConnected] = useState(false);
+  
+  const [connected, setConnected] = useState(() => socket?.connected ?? false);
 
   useEffect(() => {
     if (!getToken()) return;
     const s = acquireSocket();
-    setConnected(s.connected);
 
     const onConnect = () => setConnected(true);
     const onDisconnect = () => setConnected(false);
@@ -57,15 +57,20 @@ export function useRealtime() {
 
 
 export function useRealtimeEvent<T = unknown>(event: string, handler: (payload: T) => void) {
+  const handlerRef = useRef(handler);
+  useEffect(() => {
+    handlerRef.current = handler;
+  }, [handler]);
+
   useEffect(() => {
     if (!getToken()) return;
     const s = acquireSocket();
-    s.on(event, handler);
+    const listener = (payload: T) => handlerRef.current(payload);
+    s.on(event, listener);
 
     return () => {
-      s.off(event, handler);
+      s.off(event, listener);
       releaseSocket();
     };
-    
   }, [event]);
 }

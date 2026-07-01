@@ -42,8 +42,8 @@ export default function AdminCardDetail() {
       await api.post(`/wallet/${id}/load`, { amount: parseFloat(loadAmount) });
       setMessage(`R${loadAmount} loaded successfully.`);
       load();
-    } catch (err: any) {
-      setMessage(err.message);
+    } catch (err) {
+      setMessage(err instanceof Error ? err.message : "Something went wrong.");
     } finally {
       setBusy(false);
     }

@@ -20,8 +20,8 @@ export default function LoginPage() {
     setSubmitting(true);
     try {
       await login(email, password);
-    } catch (err: any) {
-      setError(err.message || "Unable to sign in. Please check your details.");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Unable to sign in. Please check your details.");
     } finally {
       setSubmitting(false);
     }

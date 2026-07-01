@@ -72,8 +72,8 @@ export function IssueCardModal({ onClose, onIssued }: { onClose: () => void; onI
     try {
       await api.post("/cards", { cardholderId, initialBalance: parseFloat(initialBalance) || 0 });
       onIssued();
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Something went wrong.");
     } finally {
       setSubmitting(false);
     }
