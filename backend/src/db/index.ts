@@ -9,6 +9,9 @@ export const db = new Database(DB_PATH);
 db.pragma("journal_mode = WAL");
 db.pragma("foreign_keys = ON");
 
+export function closeDb() {
+  db.close();
+}
 // ---------------------------------------------------------------------------
 // Schema
 // Kept intentionally close to the suggested table list in the brief. A real
@@ -212,7 +215,7 @@ if (roleCount.c === 0) {
       masked,
       userId,
       status,
-      new Date(Date.now() - 1000 * 60 * 60 * 24 * 30).toISOString(),
+      new Date(Date.now() - 1000 * 60 * 60 * 24 * 30 - idx * 1000).toISOString(),
       new Date(Date.now() + 1000 * 60 * 60 * 24 * 365 * 3).toISOString()
     );
     insertHistory.run(uuid(), cardId, null, status, adminId, new Date().toISOString(), "Initial issuance");

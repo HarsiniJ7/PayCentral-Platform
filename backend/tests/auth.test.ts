@@ -1,5 +1,6 @@
 import path from "path";
 import os from "os";
+import { closeDb } from "../src/db";
 import fs from "fs";
 
 process.env.DB_PATH = path.join(os.tmpdir(), `pc-test-auth-${Date.now()}-${Math.random()}.db`);
@@ -10,6 +11,7 @@ import { createApp } from "../src/app";
 const app = createApp();
 
 afterAll(() => {
+  closeDb();
   fs.rmSync(process.env.DB_PATH as string, { force: true });
   fs.rmSync(`${process.env.DB_PATH}-wal`, { force: true });
   fs.rmSync(`${process.env.DB_PATH}-shm`, { force: true });

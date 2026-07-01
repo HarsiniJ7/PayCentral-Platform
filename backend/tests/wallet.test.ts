@@ -6,6 +6,7 @@ process.env.DB_PATH = path.join(os.tmpdir(), `pc-test-wallet-${Date.now()}-${Mat
 
 import request from "supertest";
 import { createApp } from "../src/app";
+import { closeDb } from "../src/db";
 
 const app = createApp();
 let adminToken: string;
@@ -22,6 +23,7 @@ beforeAll(async () => {
 });
 
 afterAll(() => {
+  closeDb();
   fs.rmSync(process.env.DB_PATH as string, { force: true });
   fs.rmSync(`${process.env.DB_PATH}-wal`, { force: true });
   fs.rmSync(`${process.env.DB_PATH}-shm`, { force: true });

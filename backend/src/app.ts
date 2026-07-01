@@ -30,26 +30,29 @@ export function createApp() {
   app.use(express.json({ limit: "1mb" })); // also guards against oversized payload attacks
   app.use(requestLogger);
 
-  // Very small hand-rolled rate limiter for the login route, since pulling in a
-  // dependency for one endpoint felt like overkill for a PoC - documented as a
-  // "swap for express-rate-limit / API gateway throttling in prod" in the README.
-  const loginAttempts = new Map<string, { count: number; resetAt: number }>();
-  const authRateLimiter = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-    const key = req.ip || "unknown";
-    const now = Date.now();
-    const entry = loginAttempts.get(key);
-    if (!entry || now > entry.resetAt) {
-      loginAttempts.set(key, { count: 1, resetAt: now + 60_000 });
-      return next();
-    }
-    if (entry.count >= 10) {
-      return res.status(429).json({ error: "Too many attempts. Please try again in a minute." });
-    }
-    entry.count += 1;
-    next();
-  };
-  app.use("/api/auth/login", authRateLimiter);
-  app.use("/api/auth/refresh", authRateLimiter);
+  // Separate counters per route - refresh (silent token renewal, happens
+  // routinely every ~15min per active session) must not share a budget with
+  // login (a genuine brute-force target). Sharing one counter meant a normal
+  // refresh flow could lock a user out of logging back in, and vice versa.
+  function createAuthRateLimiter(maxAttempts: number) {
+    const attempts = new Map<string, { count: number; resetAt: number }>();
+    return (req: express.Request, res: express.Response, next: express.NextFunction) => {
+      const key = req.ip || "unknown";
+      const now = Date.now();
+      const entry = attempts.get(key);
+      if (!entry || now > entry.resetAt) {
+        attempts.set(key, { count: 1, resetAt: now + 60_000 });
+        return next();
+      }
+      if (entry.count >= maxAttempts) {
+        return res.status(429).json({ error: "Too many attempts. Please try again in a minute." });
+      }
+      entry.count += 1;
+      next();
+    };
+  }
+  app.use("/api/auth/login", createAuthRateLimiter(10));
+  app.use("/api/auth/refresh", createAuthRateLimiter(30));
 
   // /api/health/live, /api/health/ready, and /api/health (alias of ready)
   app.use("/api/health", healthRoutes);

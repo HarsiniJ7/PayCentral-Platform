@@ -4,11 +4,12 @@ import fs from "fs";
 
 process.env.DB_PATH = path.join(os.tmpdir(), `pc-test-fraud-${Date.now()}-${Math.random()}.db`);
 
-import { db } from "../src/db";
+import { closeDb,db } from "../src/db";
 import { runFraudChecks, recordFraudAlerts } from "../src/services/fraudEngine";
 import { v4 as uuid } from "uuid";
 
 afterAll(() => {
+  closeDb();
   fs.rmSync(process.env.DB_PATH as string, { force: true });
   fs.rmSync(`${process.env.DB_PATH}-wal`, { force: true });
   fs.rmSync(`${process.env.DB_PATH}-shm`, { force: true });

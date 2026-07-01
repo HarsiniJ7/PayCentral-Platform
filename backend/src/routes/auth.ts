@@ -17,7 +17,7 @@ const REFRESH_TOKEN_TTL_DAYS = Number(process.env.REFRESH_TOKEN_TTL_DAYS || 7);
 
 function signAccessToken(user: { id: string; email: string; roleName: string }) {
   return jwt.sign(
-    { id: user.id, email: user.email, role: user.roleName },
+    { id: user.id, email: user.email, role: user.roleName, jti: uuid() },
     JWT_SECRET,
     { expiresIn: ACCESS_TOKEN_EXPIRES_IN } as jwt.SignOptions
   );
