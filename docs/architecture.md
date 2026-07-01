@@ -74,8 +74,6 @@ flowchart LR
 
 ![Backend layering](diagrams/backend-layering.svg)
 
-This is a small layered Express API (routes -> middleware -> services -> data access), not formal Clean Architecture/CQRS - the diagram above also maps each layer to its .NET equivalent for the backend-focused track, since that's the natural second-round question.
-
 ## Request flow: a card purchase
 
 ![Purchase request flow](diagrams/api-purchase-flow.svg)
