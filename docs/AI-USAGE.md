@@ -43,4 +43,4 @@ Two decisions worth calling out:
 ## Honest take
 
 AI was useful here roughly in proportion to how mechanical the task was - route handlers and
-documentation drafts, yes; the actual judgement calls about scope, the fraud engine's edge cases, and what "production-ready thinking" means for a 48-hour PoC, no. I can walk through and defend every endpoint, schema choice and UX decision in this repo in the second-round discussion, which is the bar I held myself to while using it.
+documentation drafts, yes; the actual judgement calls about scope, the fraud engine's edge cases, and what "production-ready thinking" means for a 48-hour PoC, no.
