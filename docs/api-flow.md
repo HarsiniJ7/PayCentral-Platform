@@ -1,10 +1,6 @@
 # API Flow & Endpoint Reference
 
-Live Swagger UI is served at `http://localhost:4000/api-docs` when the backend is running (spec
-source: `backend/src/openapi.ts`, raw JSON at `/api/openapi.json`). This document is a companion
-to that, not a replacement - it adds the request-flow context that a Swagger page doesn't show
-well. All endpoints are prefixed with `/api` and, except `/auth/login`, `/auth/refresh`,
-`/auth/logout` and `/health`, require `Authorization: Bearer <token>`.
+Live Swagger UI is served at `http://localhost:4000/api-docs` when the backend is running (spec source: `backend/src/openapi.ts`, raw JSON at `/api/openapi.json`). This document is a companion to that, not a replacement - it adds the request-flow context that a Swagger page doesn't show well. All endpoints are prefixed with `/api` and, except `/auth/login`, `/auth/refresh`,`/auth/logout` and `/health`, require `Authorization: Bearer <token>`.
 
 ## Auth
 

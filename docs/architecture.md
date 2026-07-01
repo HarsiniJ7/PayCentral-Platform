@@ -4,11 +4,7 @@
 
 This was built for the **Frontend & UX Focus** track. Most of the engineering depth in this
 submission is in the React client: component structure, state, routing, accessibility and the
-admin/cardholder UX. The backend exists to give that frontend something real to talk to — it is a
-small, honest Express + SQLite API, not a disguised attempt at the full .NET/Clean Architecture
-stack described for the backend track. I'd rather submit a working, well-reasoned Node API than a
-half-finished .NET solution I didn't have time to get right. See `docs/AI-USAGE.md` and the root
-README "Assumptions" section for the full reasoning.
+admin/cardholder UX. The backend exists to give that frontend something real to talk to — it is a small, honest Express + SQLite API, not a disguised attempt at the full .NET/Clean Architecture stack described for the backend track. I'd rather submit a working, well-reasoned Node API than a half-finished .NET solution I didn't have time to get right. See `docs/AI-USAGE.md` and the root README "Assumptions" section for the full reasoning.
 
 If I were doing the backend-focused track instead, this would be a .NET 8 Web API with Clean
 Architecture (Domain / Application / Infrastructure / API layers), MediatR for CQRS, EF Core
@@ -78,9 +74,7 @@ flowchart LR
 
 ![Backend layering](diagrams/backend-layering.svg)
 
-This is a small layered Express API (routes → middleware → services → data access), not formal
-Clean Architecture/CQRS — the diagram above also maps each layer to its .NET equivalent for the
-backend-focused track, since that's the natural second-round question.
+This is a small layered Express API (routes -> middleware -> services -> data access), not formal Clean Architecture/CQRS - the diagram above also maps each layer to its .NET equivalent for the backend-focused track, since that's the natural second-round question.
 
 ## Request flow: a card purchase
 
@@ -138,13 +132,8 @@ frontend/src/
   pages/cardholder/      - 3 screens: home, transactions, notifications
 ```
 
-Routing is role-gated client-side (`ProtectedRoute`) and the API independently enforces role checks
-server-side — the frontend gate is a UX nicety, not the security boundary.
+Routing is role-gated client-side (`ProtectedRoute`) and the API independently enforces role checks server-side - the frontend gate is a UX nicety, not the security boundary.
 
 ## Scaling notes (for the second-round discussion)
 
-At higher scale the obvious next moves: move the fraud rule checks off the request path into a
-queue/worker (Azure Service Bus or similar) so a purchase isn't blocked on rule evaluation; replace
-SQLite with a managed Postgres/SQL Server instance with read replicas for reporting queries; add
-Redis for session/rate-limit state once this runs across more than one API instance; and put the
-SPA behind a CDN with the API behind a load balancer.
+At higher scale the obvious next moves: move the fraud rule checks off the request path into a queue/worker (Azure Service Bus or similar) so a purchase isn't blocked on rule evaluation; replace SQLite with a managed Postgres/SQL Server instance with read replicas for reporting queries; add Redis for session/rate-limit state once this runs across more than one API instance; and put the SPA behind a CDN with the API behind a load balancer.
