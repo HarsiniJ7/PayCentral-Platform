@@ -20,7 +20,7 @@ function makeCard() {
   const cardId = uuid();
   db.prepare(
     "INSERT INTO Cards (id, cardNumber, maskedNumber, cardholderId, status, issuedAt, expiresAt) VALUES (?, ?, ?, ?, 'Active', ?, ?)"
-  ).run(cardId, `TESTCARD${Date.now()}`, "**** **** **** TEST", cardholder.id, new Date().toISOString(), new Date().toISOString());
+  ).run(cardId, `TESTCARD${cardId}`, "**** **** **** TEST", cardholder.id, new Date().toISOString(), new Date().toISOString());
   return cardId;
 }
 
